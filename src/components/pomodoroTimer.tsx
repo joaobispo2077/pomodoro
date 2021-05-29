@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from './Button';
 import Timer from './Timer';
 
@@ -12,10 +12,37 @@ interface IPomodoroTimerProps {
 
 function PomodoroTimer(props: IPomodoroTimerProps): JSX.Element {
   const [mainTime, setMainTime] = React.useState(props.defaultPomodoroTime);
+  const [timeCounting, setTimeCounting] = React.useState(false);
+  const [working, setWorking] = React.useState(false);
+  const [resting, setResting] = React.useState(false);
 
-  useInterval(() => {
-    setMainTime(mainTime - 1);
-  }, 1000);
+  useEffect(() => {
+    if (working) document.body.classList.add('working');
+
+    if (resting) document.body.classList.remove('working');
+  }, [working, resting]);
+
+  useInterval(
+    () => {
+      setMainTime(mainTime - 1);
+    },
+    timeCounting ? 1000 : null,
+  );
+
+  const handleStartWork = () => {
+    setTimeCounting(true);
+    setWorking(true);
+    setMainTime(props.defaultPomodoroTime);
+  };
+
+  const handleStartRest = (long: boolean) => {
+    setTimeCounting(false);
+    setWorking(false);
+    setResting(true);
+
+    if (long) setMainTime(props.longRestTime);
+    else setMainTime(props.shortRestTime);
+  };
 
   return (
     <div id="pomodoro">
@@ -23,20 +50,16 @@ function PomodoroTimer(props: IPomodoroTimerProps): JSX.Element {
       <Timer mainTime={mainTime} />
 
       <div className="controls">
+        <Button text="Work" onClick={() => handleStartWork()} className="abc" />
         <Button
-          text="Start"
-          onClick={() => console.log('Hello')}
+          text="Rest"
+          onClick={() => handleStartRest(false)}
           className="abc"
         />
         <Button
-          text="Start"
-          onClick={() => console.log('Hello')}
-          className="abc"
-        />
-        <Button
-          text="Start"
-          onClick={() => console.log('Hello')}
-          className="abc"
+          text={timeCounting ? 'Pause' : 'Continue'}
+          onClick={() => setTimeCounting(!timeCounting)}
+          className={!working && !resting ? 'hidden' : ''}
         />
       </div>
 
