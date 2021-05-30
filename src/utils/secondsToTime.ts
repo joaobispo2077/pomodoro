@@ -1,8 +1,12 @@
-export function secondsToTime(seconds: number): string {
-  const zeroLeft = (num: number) => Math.floor(num).toString().padStart(2, '0');
+import { secondsToMinutes } from './secondsToMinutes';
+import zeroLeft from './zeroLeft';
 
+export function secondsToTime(seconds: number): string {
+  const hours = zeroLeft(seconds / 3600);
   const minutes = zeroLeft((seconds / 60) % 60);
   const secs = zeroLeft((seconds % 60) % 60);
 
-  return `${minutes}:${secs}`;
+  return `${hours}h ${minutes}m ${secs}s`;
 }
+
+console.log(secondsToTime(7250));
