@@ -37,6 +37,7 @@ function PomodoroTimer(props: IPomodoroTimerProps): JSX.Element {
   useInterval(
     () => {
       setMainTime(mainTime - 1);
+      if (working) setFullWorkingTime(fullWorkingTime + 1);
     },
     timeCounting ? 1000 : null,
   );
@@ -110,7 +111,7 @@ function PomodoroTimer(props: IPomodoroTimerProps): JSX.Element {
 
   return (
     <div id="pomodoro">
-      <h2>You are working</h2>
+      <h2>You are: {working ? 'Working' : 'Resting'}</h2>
       <Timer mainTime={mainTime} />
 
       <div className="controls">

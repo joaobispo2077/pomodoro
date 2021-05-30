@@ -1,4 +1,3 @@
-import { secondsToMinutes } from './secondsToMinutes';
 import zeroLeft from './zeroLeft';
 
 export function secondsToTime(seconds: number): string {
