@@ -19,12 +19,16 @@ interface IPomodoroTimerProps {
   cycles: number;
 }
 
+const getDefaultNumberOfCycles = (num: number): number => num - 1;
+
 function PomodoroTimer(props: IPomodoroTimerProps): JSX.Element {
   const [mainTime, setMainTime] = React.useState(props.defaultPomodoroTime);
   const [timeCounting, setTimeCounting] = React.useState(false);
   const [working, setWorking] = React.useState(false);
   const [resting, setResting] = React.useState(false);
-  const [cycles, setCycles] = React.useState(props.cycles);
+  const [cycles, setCycles] = React.useState(
+    getDefaultNumberOfCycles(props.cycles),
+  );
 
   const [completedCycles, setCompletedCycles] = React.useState(0);
   const [fullWorkingTime, setFullWorkingTime] = React.useState(0);
@@ -44,7 +48,13 @@ function PomodoroTimer(props: IPomodoroTimerProps): JSX.Element {
 
     setMainTime(props.defaultPomodoroTime);
     audioStartWorking.play();
-  }, [setTimeCounting, setWorking, setMainTime, props.defaultPomodoroTime]);
+  }, [
+    setTimeCounting,
+    setWorking,
+    setMainTime,
+    setResting,
+    props.defaultPomodoroTime,
+  ]);
 
   const handleStartRest = useCallback(
     (long: boolean) => {
@@ -78,7 +88,7 @@ function PomodoroTimer(props: IPomodoroTimerProps): JSX.Element {
       setCycles(cycles - 1);
     } else if (working && cycles <= 0) {
       handleStartRest(true);
-      setCycles(props.cycles);
+      setCycles(getDefaultNumberOfCycles(props.cycles));
       setCompletedCycles(completedCycles + 1);
     }
 
